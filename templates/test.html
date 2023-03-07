@@ -1,0 +1,122 @@
+<!--                                <li class="mar-btm">-->
+<!--									<div class="media-left">-->
+<!--										<img src="{{ url_for('static', filename='images/chatbot.jpeg') }}" class="img-circle img-sm" alt="Profile Picture">-->
+<!--									</div>-->
+<!--									<div class="media-body pad-hor">-->
+<!--										<div class="speech">-->
+<!--											<p>{{ conversation[0].content }}</p>-->
+<!--										</div>-->
+<!--									</div>-->
+<!--								</li>-->
+
+<!--								<li class="mar-btm">-->
+<!--									<div class="media-right">-->
+<!--										<img src="{{ url_for('static', filename='images/user.png') }}" class="img-circle img-sm" alt="Profile Picture">-->
+<!--									</div>-->
+<!--									<div class="media-body pad-hor speech-right">-->
+<!--										<div class="speech">-->
+<!--											<p>Hi, I want to buy a new shoes.</p>-->
+<!--										</div>-->
+<!--									</div>-->
+<!--								</li>-->
+
+
+<!--&lt;!&ndash;								'<p class="userText"><span>' + rawText + "</span></p>";&ndash;&gt;-->
+
+<div style="width: 200px; height: 100px; overflow-y: scroll;">
+  test
+</div>
+
+<!-- Scroll bar present and enabled when more contents -->
+<div style="width: 200px; height: 100px; overflow-y: scroll;">
+  test<br />
+  test<br />
+  test<br />
+  test<br />
+  test<br />
+  test<br />
+  test<br />
+  test<br />
+  test<br />
+  test<br />
+
+  var his = document.getElementById("bot_his_" + chat_his_index).innerHTML;
+	  var obj = {}
+	  obj["his"] = his;
+	  obj["index"] = chat_his_index;
+	  // alert(obj);
+	  console.log(obj);
+
+
+var chat_history = [];
+
+for(var idx=0; idx < chat_his_count; idx++) {
+    var cur_record = {};
+    var cur_p = document.getElementById("bot_his_" + idx);
+    if (not cur_p) {
+        cur_p = document.getElementById("man_his_" + idx);
+        cur_record["who"] = "man";
+    } else {
+        cur_record["who"] = "bot";
+    }
+    cur_record["content"] = cur_p.innerHTML;
+    chat_history.push(cur_record);
+}
+console.log(chat_history);
+
+
+	$.post("/get_response", { msg: chat_history }).done(function(data) {
+		var botHtml = '<li class ="mar-btm"><div class ="media-left"><img src = "{{ url_for('static', filename='images/chatbot.jpeg') }}" class ="img-circle img-sm" alt="Profile Picture"></div><div class ="media-body pad-hor" ><div class ="speech"><p'
+						+ ' id="bot_his_' + chat_his_count + '">'
+						+ data +'</p></div></div></li>';
+		$("#chatbox").append(botHtml);
+		chat_his_count++;
+
+		// Debug
+		// console.log(chat_history);
+		// console.log(chat_his_count);
+
+		// Keep scroll bar bottom.
+		var chatHistoryBox = document.getElementById("messageBody");
+		chatHistoryBox.scrollTop = chatHistoryBox.scrollHeight;
+		});
+	}
+
+
+    $.get("/get", { msg: chat_history }).done(function(data) {
+		var botHtml = '<li class ="mar-btm"><div class ="media-left"><img src = "{{ url_for('static', filename='images/chatbot.jpeg') }}" class ="img-circle img-sm" alt="Profile Picture"></div><div class ="media-body pad-hor" ><div class ="speech"><p'
+						+ ' id="bot_his_' + chat_his_count + '">'
+						+ data +'</p></div></div></li>';
+		$("#chatbox").append(botHtml);
+		chat_his_count++;
+
+		// Debug
+		// console.log(chat_history);
+		// console.log(chat_his_count);
+
+		// Keep scroll bar bottom.
+		var chatHistoryBox = document.getElementById("messageBody");
+		chatHistoryBox.scrollTop = chatHistoryBox.scrollHeight;
+		});
+	}
+
+
+
+    $.ajax({
+		type: "POST",
+  		url: "/get_response",
+  		data: {"history": chat_history},
+  		success: success,
+  		dataType: "json"
+	}).done(function(data) {
+		var botHtml = '<li class ="mar-btm"><div class ="media-left"><img src = "{{ url_for('static', filename='images/chatbot.jpeg') }}" class ="img-circle img-sm" alt="Profile Picture"></div><div class ="media-body pad-hor" ><div class ="speech"><p'
+						+ ' id="bot_his_' + chat_his_count + '">'
+						+ data +'</p></div></div></li>';
+		$("#chatbox").append(botHtml);
+		chat_his_count++;
+		console.log(chat_his_count);
+
+		var chatHistoryBox = document.getElementById("messageBody");
+		chatHistoryBox.scrollTop = chatHistoryBox.scrollHeight;
+	});
+</div>
