@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: chatbot5125
+      MYSQL_USER: chaoyi
+      MYSQL_PASSWORD: cliu241
+    volumes:
+      - ./database/mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  chatbot:
+    image: chatbot_v5
+    environment:
+      DATABASE_HOST: db
+    ports:
+      - 5000:5000
